@@ -9,8 +9,8 @@ public class Natto {
         ArrayList<String> history = new ArrayList<>();
 
         // Start - Greeting User
-        System.out.println("Hello! I'm " + logo + "\n"
-                + "What can I do for you?");
+        System.out.println("Hello! I'm " + logo);
+        System.out.println("What can I do for you?");
         // Body
         while (true) {
             String line = sc.nextLine();
