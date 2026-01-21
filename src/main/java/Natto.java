@@ -21,9 +21,9 @@ class Task {
     @Override
     public String toString() {
         if(isDone) {
-            return ("[T] [X] " + this.name);
+            return ("[X] " + this.name);
         } else {
-            return ("[T] [ ] " + this.name);
+            return ("[ ] " + this.name);
         }
     }
 }
@@ -43,6 +43,34 @@ class Deadline extends Task {
     }
 }
 
+class Todo extends Task {
+
+    public Todo(String description) {
+        super(description);
+    }
+
+    @Override
+    public String toString() {
+        return "[T]" + super.toString();
+    }
+}
+
+class Event extends Task {
+
+    protected String from;
+    protected String to;
+
+    public Event(String description, String from, String to) {
+        super(description);
+        this.from = from;
+        this.to = to;
+    }
+
+    @Override
+    public String toString() {
+        return "[E]" + super.toString() + " (from: " + from + " to: " + to + ")";
+    }
+}
 public class Natto {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -75,15 +103,36 @@ public class Natto {
                 System.out.println(tasks.get(index).toString());
                 continue;
             }
-            if (parts[0].equals("todo")) {                            // Add
+            if (parts[0].equals("todo")) {                            // Add Todo
                 String s = line.substring(5);
-                Task theTask = new Task(s);
+                Todo theTask = new Todo(s);
                 System.out.println("\nGot it. I've added this task:");
                 tasks.add(theTask);
                 amountOfTasks = tasks.size();
-                System.out.println("   " + theTask.toString());
+                System.out.println("   " + theTask);
                 System.out.println("Now you have " + amountOfTasks + " tasks in the list.");
                 continue;
+            }
+            if(parts[0].equals("deadline")) {                        // Add Deadline
+                String s = line.substring(9, line.indexOf("/by")).trim();
+                String date = line.substring(line.indexOf("/by") + 3).trim();
+                Deadline theTask = new Deadline(s ,date);
+                System.out.println("\nGot it. I've added this task:");
+                tasks.add(theTask);
+                amountOfTasks = tasks.size();
+                System.out.println("   " + theTask);
+                System.out.println("Now you have " + amountOfTasks + " tasks in the list.");
+            }
+            if(parts[0].equals("event")) {
+                String s = line.substring(6, line.indexOf("/from")).trim();
+                String from = line.substring(line.indexOf("/from") + 5, line.indexOf("/to")).trim();
+                String to = line.substring(line.indexOf("/to") + 3).trim();
+                Event theTask = new Event(s ,from, to);
+                System.out.println("\nGot it. I've added this task:");
+                tasks.add(theTask);
+                amountOfTasks = tasks.size();
+                System.out.println("   " + theTask);
+                System.out.println("Now you have " + amountOfTasks + " tasks in the list.");
             }
 
             if (line.equals("list")){                                 // Print history
