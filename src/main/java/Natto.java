@@ -10,6 +10,14 @@ class Task {
         this.isDone = false;
     }
 
+    public void mark() {
+        this.isDone = true;
+    }
+
+    public void unmark() {
+        this.isDone = false;
+    }
+
     @Override
     public String toString() {
         if(isDone) {
@@ -35,8 +43,24 @@ public class Natto {
         // Body
         while (true) {
             String line = sc.nextLine();
-            if (line.equals("bye")) break;     // Exit
-            if (line.equals("list")){          // Print history
+            String[] parts = line.split(" ");
+
+            if (line.equals("bye")) break;                            // Exit
+            if (parts[0].equals("mark")){                             // Mark
+                System.out.println("\nNice! I've marked this task as done:");
+                int index = Integer.parseInt(parts[1]) - 1;
+                tasks.get(index).mark();
+                System.out.println(tasks.get(index).toString());
+                continue;
+            }
+            if (parts[0].equals("unmark")){                           // Unmark
+                System.out.println("\nOK, I've marked this task as not done yet:");
+                int index = Integer.parseInt(parts[1]) - 1;
+                tasks.get(index).unmark();
+                System.out.println(tasks.get(index).toString());
+                continue;
+            }
+            if (line.equals("list")){                                 // Print history
                 System.out.println("____________________________________________________________");
                 System.out.println("Here are the tasks in your list:");
                 for (int i = 0; i < tasks.size(); i++) {
