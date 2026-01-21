@@ -21,12 +21,26 @@ class Task {
     @Override
     public String toString() {
         if(isDone) {
-            return ("[X] " + this.name);
+            return ("[T] [X] " + this.name);
         } else {
-            return ("[ ] " + this.name);
+            return ("[T] [ ] " + this.name);
         }
     }
+}
 
+class Deadline extends Task {
+
+    protected String by;
+
+    public Deadline(String description, String by) {
+        super(description);
+        this.by = by;
+    }
+
+    @Override
+    public String toString() {
+        return "[D]" + super.toString() + " (by: " + by + ")";
+    }
 }
 
 public class Natto {
@@ -35,6 +49,7 @@ public class Natto {
         String logo = "Natto";
         String exit = "Bye. Hope to see you again soon!";
         ArrayList<Task> tasks = new ArrayList<>();
+        int amountOfTasks = 0;
 
         // Start - Greeting User
         System.out.println("Hello! I'm " + logo);
@@ -60,6 +75,17 @@ public class Natto {
                 System.out.println(tasks.get(index).toString());
                 continue;
             }
+            if (parts[0].equals("todo")) {                            // Add
+                String s = line.substring(5);
+                Task theTask = new Task(s);
+                System.out.println("\nGot it. I've added this task:");
+                tasks.add(theTask);
+                amountOfTasks = tasks.size();
+                System.out.println("   " + theTask.toString());
+                System.out.println("Now you have " + amountOfTasks + " tasks in the list.");
+                continue;
+            }
+
             if (line.equals("list")){                                 // Print history
                 System.out.println("____________________________________________________________");
                 System.out.println("Here are the tasks in your list:");
@@ -67,10 +93,7 @@ public class Natto {
                     System.out.println((i+1) + ". " + tasks.get(i));
                 }
                 System.out.println("____________________________________________________________");
-                continue;
             }
-            System.out.println("added: " + line);
-            tasks.add(new Task(line));
         }
 
         //Ending
