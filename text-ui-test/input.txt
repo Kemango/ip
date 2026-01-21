@@ -6,3 +6,6 @@ todo join sports club
 mark 4
 todo borrow book
 list
+delete 1
+delete 2
+list

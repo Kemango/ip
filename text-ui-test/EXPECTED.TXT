@@ -34,3 +34,17 @@ Here are the tasks in your list:
 4. [T][X] join sports club
 5. [T][ ] borrow book
 ____________________________________________________________
+
+Noted. I've removed this task:
+   [T][X] read book
+Now you have 4 tasks in the list.
+
+Noted. I've removed this task:
+   [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+Now you have 3 tasks in the list.
+____________________________________________________________
+Here are the tasks in your list:
+1. [D][ ] return book (by: June 6th)
+2. [T][X] join sports club
+3. [T][ ] borrow book
+____________________________________________________________

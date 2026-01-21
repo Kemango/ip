@@ -91,7 +91,7 @@ public class Natto {
         System.out.println("Hello! I'm " + logo);
         System.out.println("What can I do for you?");
         Set<String> keywords = Set.of(
-                "bye", "mark", "unmark", "todo", "deadline", "event", "list"
+                "bye", "mark", "unmark", "todo", "deadline", "event", "list", "delete"
         );
         // Body
         while (true) {
@@ -129,6 +129,20 @@ public class Natto {
                     System.out.println(tasks.get(index).toString());
                     continue;
                 }
+                if (parts[0].equals("delete")) {                        // Delete
+                    if (parts.length < 2) {
+                        throw new NattoException("Please specify a task index.");
+                    }
+                    int index = Integer.parseInt(parts[1]) - 1;
+                    if (index < 0 || index >= tasks.size()) {
+                        throw new NattoException("No such task exists.");
+                    }
+                    System.out.println("\nNoted. I've removed this task:");
+                    System.out.println("   " + tasks.get(index));
+                    tasks.remove(index);
+                    amountOfTasks = tasks.size();
+                    System.out.println("Now you have " + amountOfTasks + " tasks in the list.");
+                }
                 if (parts[0].equals("todo")) {                            // Add Todo
                     if (parts.length < 2) {
                         throw new NattoException("The description of a todo cannot be empty.");
@@ -155,7 +169,7 @@ public class Natto {
                     System.out.println("   " + theTask);
                     System.out.println("Now you have " + amountOfTasks + " tasks in the list.");
                 }
-                if(parts[0].equals("event")) {
+                if(parts[0].equals("event")) {                               // Event
                     if (parts.length < 2) {
                         throw new NattoException("The description of a event cannot be empty.");
                     }
