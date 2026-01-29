@@ -16,8 +16,8 @@ class NattoException extends Exception {
  * Represents a task with a name and completion status.
  */
 class Task {
-    String name;
-    boolean isDone;
+    private String name;
+    private boolean isDone;
 
     /**
      * Creates a task with the given name.
@@ -48,9 +48,17 @@ class Task {
      *
      * @return Display string of the task.
      */
+    public boolean isDone() {
+        return isDone;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     @Override
     public String toString() {
-        if(isDone) {
+        if (isDone) {
             return ("[X] " + this.name);
         } else {
             return ("[ ] " + this.name);
