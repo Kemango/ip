@@ -32,10 +32,6 @@ class Task {
     /**
      * Marks the task as done.
      */
-    public String getName() {
-        return name;
-    }
-
     public void mark() {
         this.isDone = true;
     }

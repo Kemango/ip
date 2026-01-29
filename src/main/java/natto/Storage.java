@@ -106,8 +106,7 @@ public class Storage {
      * @return String representation suitable for saving to file.
      * @throws NattoException If the task type is unsupported.
      */
-    static String taskToFile(Task task) throws NattoException {
-        String done = task.isDone ? "1" : "0";
+
     static String taskToFile(Task task) {
         String done = task.isDone() ? "1" : "0";
 
