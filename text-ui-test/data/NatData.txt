@@ -1,3 +1,0 @@
-D | 0 | return book | June 6th
-T | 1 | join sports club
-T | 0 | borrow book
