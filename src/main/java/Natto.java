@@ -1,10 +1,14 @@
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 class NattoException extends Exception {
     public NattoException(String message) {
@@ -41,16 +45,17 @@ class Task {
 
 class Deadline extends Task {
 
-    protected String by;
+    protected LocalDateTime by;
 
-    public Deadline(String description, String by) {
+    public Deadline(String description, LocalDateTime by) {
         super(description);
         this.by = by;
     }
 
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + by + ")";
+        DateTimeFormatter schoolDateFormat = DateTimeFormatter.ofPattern("MMM dd yyyy");
+        return "[D]" + super.toString() + " (by: " + by.format(schoolDateFormat) + ")";
     }
 }
 
@@ -68,10 +73,10 @@ class Todo extends Task {
 
 class Event extends Task {
 
-    protected String from;
-    protected String to;
+    protected LocalDateTime from;
+    protected LocalDateTime to;
 
-    public Event(String description, String from, String to) {
+    public Event(String description, LocalDateTime from, LocalDateTime to) {
         super(description);
         this.from = from;
         this.to = to;
@@ -79,13 +84,18 @@ class Event extends Task {
 
     @Override
     public String toString() {
-        return "[E]" + super.toString() + " (from: " + from + " to: " + to + ")";
+        DateTimeFormatter schoolDateFormat = DateTimeFormatter.ofPattern("MMM dd yyyy");
+        DateTimeFormatter schoolTimeFormat = DateTimeFormatter.ofPattern("HH:mm");
+        return "[E]" + super.toString()
+                + " (from: " + from.format(schoolDateFormat) + " " + from.format(schoolTimeFormat)
+                + " to: " + to.format(schoolTimeFormat) + ")";
     }
 }
 
 public class Natto {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        LocalDateTime timeNow = LocalDateTime.now();
         boolean isComplete = false;
         ArrayList<Task> tasks;
         try {
@@ -223,17 +233,21 @@ public class Natto {
 
     static void implementDeadline(String input, ArrayList<Task> tasks) throws NattoException {
         if (!input.contains("/by")) {
-            throw new NattoException("Deadline must have /by. Example: deadline hw /by tomorrow");
+            throw new NattoException("Deadline must have /by. Example: deadline [something] /by [yyyy-mm-dd HH]  ");
         }
-
         String desc = input.substring(9, input.indexOf("/by")).trim();
-        String by = input.substring(input.indexOf("/by") + 3).trim();
-
+        String byString = input.substring(input.indexOf("/by") + 3).trim();
+        LocalDateTime by;
+        if (byString.matches("\\d{4}-\\d{2}-\\d{2}")) {
+            by = LocalDate.parse(byString).atStartOfDay();
+        } else if (byString.matches("\\d{4}-\\d{2}-\\d{2} \\d{4}")) {
+            DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+            by = LocalDateTime.parse(byString, f);
+        } else {
+            throw new NattoException("Invalid date format. Use yyyy-mm-dd or yyyy-mm-dd HHmm");
+        }
         if (desc.isEmpty()) {
             throw new NattoException("The description of a deadline cannot be empty.");
-        }
-        if (by.isEmpty()) {
-            throw new NattoException("The /by date cannot be empty.");
         }
         Deadline deadline = new Deadline(desc, by);
         tasks.add(deadline);
@@ -249,8 +263,30 @@ public class Natto {
         }
 
         String desc = input.substring(6, input.indexOf("/from")).trim();
-        String from = input.substring(input.indexOf("/from") + 5, input.indexOf("/to")).trim();
-        String to = input.substring(input.indexOf("/to") + 3).trim();
+        String fromString = input.substring(input.indexOf("/from") + 5, input.indexOf("/to")).trim();
+        String toString = input.substring(input.indexOf("/to") + 3).trim();
+        LocalDateTime from;
+        LocalDateTime to;
+        if (fromString.matches("\\d{4}-\\d{2}-\\d{2}")) {
+            from = LocalDate.parse(fromString).atStartOfDay();
+        } else if (fromString.matches("\\d{4}-\\d{2}-\\d{2} \\d{4}")) {
+            DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+            from = LocalDateTime.parse(fromString, f);
+        } else {
+            throw new NattoException("Invalid date format. Use yyyy-mm-dd or yyyy-mm-dd HHmm");
+        }
+
+        if (toString.matches("\\d{4}")) {
+            DateTimeFormatter tf = DateTimeFormatter.ofPattern("HHmm");
+            LocalTime t = LocalTime.parse(toString, tf);
+            to = LocalDateTime.of(from.toLocalDate(), t);
+        } else if (toString.matches("\\d{4}-\\d{2}-\\d{2} \\d{4}")) {
+            DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+            to = LocalDateTime.parse(toString, f);
+        } else {
+            throw new NattoException("Invalid date format. Use yyyy-mm-dd or yyyy-mm-dd HHmm");
+        }
+
 
         if (desc.isEmpty()) {
             throw new NattoException("The description of an event cannot be empty.");
@@ -306,7 +342,7 @@ public class Natto {
                 if (parts.length < 4) {
                     throw new IllegalArgumentException("Corrupted deadline data: " + line);
                 }
-                String by = parts[3].trim();
+                LocalDateTime by = LocalDateTime.parse(parts[3].trim());
                 task = new Deadline(description, by);
                 break;
 
@@ -318,8 +354,8 @@ public class Natto {
                 String time = raw.substring(lastSpace + 1).trim();
 
                 int dash = time.indexOf("-");
-                String from = date + " " + time.substring(0, dash);
-                String to = time.substring(dash + 1);
+                LocalDateTime from = LocalDateTime.parse(date + " " + time.substring(0, dash));
+                LocalDateTime to = LocalDateTime.parse(time.substring(dash + 1));
 
                 task = new Event(description, from, to);
                 break;
@@ -367,6 +403,26 @@ public class Natto {
             }
         } catch (IOException e) {
             throw new NattoException("Error saving tasks to file.");
+        }
+    }
+
+    private static boolean isValidDateTime(String by) {
+        try {
+            if (by.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                LocalDateTime.parse(by);
+                return true;
+            }
+
+            if (by.matches("\\d{4}-\\d{2}-\\d{2} \\d{4}")) {
+                DateTimeFormatter formatter =
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+                LocalDateTime.parse(by, formatter);
+                return true;
+            }
+
+            return false;
+        } catch (DateTimeException e) {
+            return false;
         }
     }
 }
