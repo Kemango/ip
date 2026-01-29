@@ -94,335 +94,121 @@ class Event extends Task {
 
 public class Natto {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        LocalDateTime timeNow = LocalDateTime.now();
         boolean isComplete = false;
-        ArrayList<Task> tasks;
+        Ui ui = new Ui();
+        Storage storage = new Storage("data/NatData.txt");
+        TaskList tasks;
+
+        ui.printGreeting();
         try {
-            tasks = new ArrayList<>(loadTasks());
+            tasks = new TaskList(storage.loadTasks());
         } catch (NattoException e) {
-            System.out.println(e.getMessage());
-            tasks = new ArrayList<>();
+            ui.printError(e.getMessage());
+            tasks = new TaskList();
         }
 
-        System.out.println("Hello! I'm Natto");
-        System.out.println("What can I do for you?");
-
         while (!isComplete) {
-            if (!scanner.hasNextLine()) {
-                break;
-            }
-            String input = scanner.nextLine().trim();
+            String input = ui.readCommand();
+            if (input == null) break;
             if (input.isEmpty()) continue;
 
-            String commandWord = input.split(" ")[0];
+            String commandWord = Parser.getCommandWord(input);
 
             try {
                 switch (commandWord) {
                 case "bye":
-                    System.out.println("\nBye. Hope to see you again soon!");
+                    ui.printGoodbye();
                     isComplete = true;
                     break;
 
                 case "list":
-                    implementList(input, tasks);
+                    implementList(input, tasks, ui);
                     break;
 
                 case "mark":
-                    implementMark(input, tasks);
+                    implementMark(input, tasks, ui, storage);
                     break;
 
                 case "unmark":
-                    implementUnmark(input, tasks);
+                    implementUnmark(input, tasks, ui, storage);
                     break;
 
                 case "delete":
-                    implementDelete(input, tasks);
+                    implementDelete(input, tasks, ui, storage);
                     break;
 
                 case "todo":
-                    implementTodo(input, tasks);
+                    implementTodo(input, tasks, ui, storage);
                     break;
 
                 case "deadline":
-                    implementDeadline(input, tasks);
+                    implementDeadline(input, tasks, ui, storage);
                     break;
 
                 case "event":
-                    implementEvent(input, tasks);
+                    implementEvent(input, tasks, ui, storage);
                     break;
 
                 default:
                     throw new NattoException("Please use a keyword like: todo, deadline, event, list");
                 }
             } catch (NattoException e) {
-                System.out.println(e.getMessage());
+                ui.printError(e.getMessage());
             }
         }
     }
 
-    static int indexChecker(String input, ArrayList<Task> tasks) throws NattoException {
-        String[] parts = input.split(" ");
-        if (parts.length < 2) {
-            throw new NattoException("Please specify a task index.");
-        }
-
-        int index;
-        try {
-            index = Integer.parseInt(parts[1]) - 1;
-        } catch (NumberFormatException e) {
-            throw new NattoException("Index must be a number.");
-        }
-
-        if (index < 0 || index >= tasks.size()) {
-            throw new NattoException("No such task exists.");
-        }
-        return index;
-    }
-
-    static void implementList(String input, ArrayList<Task> tasks) throws NattoException {
+    static void implementList(String input, TaskList tasks, Ui ui) throws NattoException {
         String[] parts = input.split(" ");
         if (parts.length > 1) {
             throw new NattoException("list keyword works alone");
         }
-        System.out.println("____________________________________________________________");
-        System.out.println("Here are the tasks in your list:");
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println((i + 1) + ". " + tasks.get(i));
-        }
-        System.out.println("____________________________________________________________");
+        ui.printList(tasks.getAll());
     }
 
-    static void implementMark(String input, ArrayList<Task> tasks) throws NattoException {
-        int index = indexChecker(input, tasks);
+    static void implementMark(String input, TaskList tasks, Ui ui, Storage storage) throws NattoException {
+        int index = Parser.parseIndex(input, tasks.size());
         tasks.get(index).mark();
-        System.out.println("\nNice! I've marked this task as done:");
-        System.out.println("  " + tasks.get(index));
-        saveTasks(tasks);
+        ui.printMark(tasks.getAll(), index);
+        storage.saveTasks(tasks.getAll());
     }
 
-    static void implementUnmark(String input, ArrayList<Task> tasks) throws NattoException {
-        int index = indexChecker(input, tasks);
+    static void implementUnmark(String input, TaskList tasks, Ui ui, Storage storage) throws NattoException {
+        int index = Parser.parseIndex(input, tasks.size());
         tasks.get(index).unmark();
-        System.out.println("OK, I've marked this task as not done yet:");
-        System.out.println("  " + tasks.get(index));
-        saveTasks(tasks);
+        ui.printUnmark(tasks.getAll(), index);
+        storage.saveTasks(tasks.getAll());
     }
 
-    static void implementDelete(String input, ArrayList<Task> tasks) throws NattoException {
-        int index = indexChecker(input, tasks);
+    static void implementDelete(String input, TaskList tasks, Ui ui, Storage storage) throws NattoException {
+        int index = Parser.parseIndex(input, tasks.size());
         Task removed = tasks.remove(index);
-        System.out.println("\nNoted. I've removed this task:");
-        System.out.println("  " + removed);
-        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-        saveTasks(tasks);
+        ui.printDelete(removed, tasks.size());
+        storage.saveTasks(tasks.getAll());
     }
 
-    static void implementTodo(String input, ArrayList<Task> tasks) throws NattoException {
-        String[] parts = input.split(" ", 2);
-        if (parts.length < 2 || parts[1].trim().isEmpty()) {
-            throw new NattoException("The description of a todo cannot be empty.");
-        }
-        Todo todo = new Todo(parts[1].trim());
+    static void implementTodo(String input, TaskList tasks, Ui ui, Storage storage) throws NattoException {
+        String desc = Parser.parseTodo(input);
+        Todo todo = new Todo(desc);
+
         tasks.add(todo);
-        System.out.println("\nGot it. I've added this task:");
-        System.out.println("  " + todo);
-        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-        saveTasks(tasks);
+        ui.printAdd(todo, tasks.size());
+        storage.saveTasks(tasks.getAll());
     }
 
-    static void implementDeadline(String input, ArrayList<Task> tasks) throws NattoException {
-        if (!input.contains("/by")) {
-            throw new NattoException("Deadline must have /by. Example: deadline [something] /by [yyyy-mm-dd HH]  ");
-        }
-        String desc = input.substring(9, input.indexOf("/by")).trim();
-        String byString = input.substring(input.indexOf("/by") + 3).trim();
-        LocalDateTime by;
-        if (byString.matches("\\d{4}-\\d{2}-\\d{2}")) {
-            by = LocalDate.parse(byString).atStartOfDay();
-        } else if (byString.matches("\\d{4}-\\d{2}-\\d{2} \\d{4}")) {
-            DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
-            by = LocalDateTime.parse(byString, f);
-        } else {
-            throw new NattoException("Invalid date format. Use yyyy-mm-dd or yyyy-mm-dd HHmm");
-        }
-        if (desc.isEmpty()) {
-            throw new NattoException("The description of a deadline cannot be empty.");
-        }
-        Deadline deadline = new Deadline(desc, by);
+    static void implementDeadline(String input, TaskList tasks, Ui ui, Storage storage) throws NattoException {
+        Deadline deadline = Parser.parseDeadline(input);
+
         tasks.add(deadline);
-        System.out.println("\nGot it. I've added this task:");
-        System.out.println("  " + deadline);
-        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-        saveTasks(tasks);
+        ui.printAdd(deadline, tasks.size());
+        storage.saveTasks(tasks.getAll());
     }
 
-    static void implementEvent(String input, ArrayList<Task> tasks) throws NattoException {
-        if (!input.contains("/from") || !input.contains("/to")) {
-            throw new NattoException("Event must have /from and /to.");
-        }
+    static void implementEvent(String input, TaskList tasks, Ui ui, Storage storage) throws NattoException {
+        Event event = Parser.parseEvent(input);
 
-        String desc = input.substring(6, input.indexOf("/from")).trim();
-        String fromString = input.substring(input.indexOf("/from") + 5, input.indexOf("/to")).trim();
-        String toString = input.substring(input.indexOf("/to") + 3).trim();
-        LocalDateTime from;
-        LocalDateTime to;
-        if (fromString.matches("\\d{4}-\\d{2}-\\d{2}")) {
-            from = LocalDate.parse(fromString).atStartOfDay();
-        } else if (fromString.matches("\\d{4}-\\d{2}-\\d{2} \\d{4}")) {
-            DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
-            from = LocalDateTime.parse(fromString, f);
-        } else {
-            throw new NattoException("Invalid date format. Use yyyy-mm-dd or yyyy-mm-dd HHmm");
-        }
-
-        if (toString.matches("\\d{4}")) {
-            DateTimeFormatter tf = DateTimeFormatter.ofPattern("HHmm");
-            LocalTime t = LocalTime.parse(toString, tf);
-            to = LocalDateTime.of(from.toLocalDate(), t);
-        } else if (toString.matches("\\d{4}-\\d{2}-\\d{2} \\d{4}")) {
-            DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
-            to = LocalDateTime.parse(toString, f);
-        } else {
-            throw new NattoException("Invalid date format. Use yyyy-mm-dd or yyyy-mm-dd HHmm");
-        }
-
-
-        if (desc.isEmpty()) {
-            throw new NattoException("The description of an event cannot be empty.");
-        }
-
-        Event event = new Event(desc, from, to);
         tasks.add(event);
-        System.out.println("\nGot it. I've added this task:");
-        System.out.println("  " + event);
-        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-        saveTasks(tasks);
-    }
-
-    static List<Task> loadTasks() throws NattoException {
-        List<Task> taskList = new ArrayList<>();
-        File f = new File("data/NatData.txt");
-
-        if (!f.exists()) {
-            return taskList;
-        }
-
-        try (Scanner sc = new Scanner(f)) {
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine().trim();
-                if (!line.isEmpty()) {
-                    taskList.add(loadTaskArray(line));
-                }
-            }
-            return taskList;
-        } catch (Exception e) {
-            throw new NattoException("Error loading tasks from file.");
-        }
-    }
-    static Task loadTaskArray(String line) {
-        String[] parts = line.split(" \\| ");
-
-        if (parts.length < 3) {
-            throw new IllegalArgumentException("Corrupted data: " + line);
-        }
-
-        String type = parts[0].trim();
-        boolean isDone = parts[1].trim().equals("1");
-        String description = parts[2].trim();
-
-        Task task;
-
-        switch (type) {
-            case "T":
-                task = new Todo(description);
-                break;
-
-            case "D":
-                if (parts.length < 4) {
-                    throw new IllegalArgumentException("Corrupted deadline data: " + line);
-                }
-                LocalDateTime by = LocalDateTime.parse(parts[3].trim());
-                task = new Deadline(description, by);
-                break;
-
-            case "E":
-                String raw = parts[3].trim();
-
-                int lastSpace = raw.lastIndexOf(" ");
-                String date = raw.substring(0, lastSpace).trim();
-                String time = raw.substring(lastSpace + 1).trim();
-
-                int dash = time.indexOf("-");
-                LocalDateTime from = LocalDateTime.parse(date + " " + time.substring(0, dash));
-                LocalDateTime to = LocalDateTime.parse(time.substring(dash + 1));
-
-                task = new Event(description, from, to);
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown task type: " + type);
-        }
-
-        if (isDone) {
-            task.mark();
-        }
-        return task;
-    }
-
-    static String taskToFile(Task task) throws NattoException {
-        String done = task.isDone ? "1" : "0";
-
-        if (task instanceof Todo) {
-            return "T | " + done + " | " + task.name;
-        }
-
-        if (task instanceof Deadline) {
-            Deadline d = (Deadline) task;
-            return "D | " + done + " | " + d.name + " | " + d.by;
-        }
-
-        if (task instanceof Event) {
-            Event e = (Event) task;
-            String time = e.from + "-" + e.to;
-            return "E | " + done + " | " + e.name + " | " + time;
-        }
-        throw new IllegalArgumentException("Unknown task type");
-    }
-
-    static void saveTasks(ArrayList<Task> tasks) throws NattoException {
-        File dir = new File("data");
-        File f = new File("data" + File.separator + "NatData.txt");
-
-        if (!dir.exists()) {
-            dir.mkdir();
-        }
-        try (FileWriter fw = new FileWriter(f)) {
-            for (Task t : tasks) {
-                fw.write(taskToFile(t));
-                fw.write(System.lineSeparator());
-            }
-        } catch (IOException e) {
-            throw new NattoException("Error saving tasks to file.");
-        }
-    }
-
-    private static boolean isValidDateTime(String by) {
-        try {
-            if (by.matches("\\d{4}-\\d{2}-\\d{2}")) {
-                LocalDateTime.parse(by);
-                return true;
-            }
-
-            if (by.matches("\\d{4}-\\d{2}-\\d{2} \\d{4}")) {
-                DateTimeFormatter formatter =
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
-                LocalDateTime.parse(by, formatter);
-                return true;
-            }
-
-            return false;
-        } catch (DateTimeException e) {
-            return false;
-        }
+        ui.printAdd(event, tasks.size());
+        storage.saveTasks(tasks.getAll());
     }
 }

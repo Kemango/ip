@@ -1,0 +1,102 @@
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
+public class Parser {
+
+    public static String getCommandWord(String input) {
+        return input.trim().split(" ")[0];
+    }
+
+    public static int parseIndex(String input, int size) throws NattoException {
+        String[] parts = input.split(" ");
+        if (parts.length < 2) {
+            throw new NattoException("Please specify a task index.");
+        }
+
+        int index;
+        try {
+            index = Integer.parseInt(parts[1]) - 1;
+        } catch (NumberFormatException e) {
+            throw new NattoException("Index must be a number.");
+        }
+
+        if (index < 0 || index >= size) {
+            throw new NattoException("No such task exists.");
+        }
+        return index;
+    }
+
+    public static String parseTodo(String input) throws NattoException {
+        String[] parts = input.split(" ", 2);
+        if (parts.length < 2 || parts[1].trim().isEmpty()) {
+            throw new NattoException("The description of a todo cannot be empty.");
+        }
+        return parts[1].trim();
+    }
+
+    public static Deadline parseDeadline(String input) throws NattoException {
+        if (!input.contains("/by")) {
+            throw new NattoException("Deadline must have /by. Example: deadline [something] /by [yyyy-mm-dd HH]  ");
+        }
+
+        String desc = input.substring(9, input.indexOf("/by")).trim();
+        String byString = input.substring(input.indexOf("/by") + 3).trim();
+
+        if (desc.isEmpty()) {
+            throw new NattoException("The description of a deadline cannot be empty.");
+        }
+
+        LocalDateTime by;
+        if (byString.matches("\\d{4}-\\d{2}-\\d{2}")) {
+            by = LocalDate.parse(byString).atStartOfDay();
+        } else if (byString.matches("\\d{4}-\\d{2}-\\d{2} \\d{4}")) {
+            DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+            by = LocalDateTime.parse(byString, f);
+        } else {
+            throw new NattoException("Invalid date format. Use yyyy-mm-dd or yyyy-mm-dd HHmm");
+        }
+
+        return new Deadline(desc, by);
+    }
+
+    public static Event parseEvent(String input) throws NattoException {
+        if (!input.contains("/from") || !input.contains("/to")) {
+            throw new NattoException("Event must have /from and /to.");
+        }
+
+        String desc = input.substring(6, input.indexOf("/from")).trim();
+        String fromString = input.substring(input.indexOf("/from") + 5, input.indexOf("/to")).trim();
+        String toString = input.substring(input.indexOf("/to") + 3).trim();
+
+        if (desc.isEmpty()) {
+            throw new NattoException("The description of an event cannot be empty.");
+        }
+
+        LocalDateTime from;
+        LocalDateTime to;
+
+        if (fromString.matches("\\d{4}-\\d{2}-\\d{2}")) {
+            from = LocalDate.parse(fromString).atStartOfDay();
+        } else if (fromString.matches("\\d{4}-\\d{2}-\\d{2} \\d{4}")) {
+            DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+            from = LocalDateTime.parse(fromString, f);
+        } else {
+            throw new NattoException("Invalid date format. Use yyyy-mm-dd or yyyy-mm-dd HHmm");
+        }
+
+        if (toString.matches("\\d{4}")) {
+            DateTimeFormatter tf = DateTimeFormatter.ofPattern("HHmm");
+            LocalTime t = LocalTime.parse(toString, tf);
+            to = LocalDateTime.of(from.toLocalDate(), t);
+        } else if (toString.matches("\\d{4}-\\d{2}-\\d{2} \\d{4}")) {
+            DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+            to = LocalDateTime.parse(toString, f);
+        } else {
+            throw new NattoException("Invalid date format. Use yyyy-mm-dd or yyyy-mm-dd HHmm");
+        }
+
+        return new Event(desc, from, to);
+    }
+}
