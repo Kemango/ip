@@ -8,5 +8,6 @@ todo borrow book
 list
 delete 1
 delete 2
+find book
 bye
 

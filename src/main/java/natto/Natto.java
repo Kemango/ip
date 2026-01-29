@@ -32,6 +32,10 @@ class Task {
     /**
      * Marks the task as done.
      */
+    public String getName() {
+        return name;
+    }
+
     public void mark() {
         this.isDone = true;
     }
@@ -59,9 +63,9 @@ class Task {
     @Override
     public String toString() {
         if (isDone) {
-            return ("[X] " + this.name);
+            return "[X] " + this.name;
         } else {
-            return ("[ ] " + this.name);
+            return "[ ] " + this.name;
         }
     }
 }
@@ -199,6 +203,10 @@ public class Natto {
                     implementEvent(input, tasks, ui, storage);
                     break;
 
+                case "find":
+                    implementFind(input, tasks, ui);
+                    break;
+                    
                 default:
                     throw new NattoException("Please use a keyword like: todo, deadline, event, list");
                 }
@@ -323,4 +331,10 @@ public class Natto {
         ui.printAdd(event, tasks.size());
         storage.saveTasks(tasks.getAll());
     }
+
+    static void implementFind(String input, TaskList tasks, Ui ui) throws NattoException {
+        String keyword = Parser.parseFind(input);
+        ui.printFind(tasks, keyword);
+    }
+
 }
