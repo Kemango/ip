@@ -101,4 +101,15 @@ public class Parser {
 
         return new Event(desc, from, to);
     }
+
+    public static String parseFind(String input) throws NattoException {
+        String[] parts = input.split(" ", 2);
+
+        if (parts.length < 2 || parts[1].trim().isEmpty()) {
+            throw new NattoException("Please provide a keyword to find.");
+        }
+
+        return parts[1].trim();
+    }
+
 }

@@ -62,4 +62,18 @@ public class Ui {
         System.out.println("Now you have " + size + " tasks in the list.");
     }
 
+    public void printFind(TaskList taskList, String keyword) {
+        printLine();
+        System.out.println("Here are the matching tasks in your list:");
+
+        for (int i = 0; i < taskList.size(); i++) {
+            Task task = taskList.get(i);
+            if (task.getName().toLowerCase()
+                    .contains(keyword.toLowerCase())) {
+                System.out.println((i + 1) + ". " + task);
+            }
+        }
+        printLine();
+    }
+
 }
