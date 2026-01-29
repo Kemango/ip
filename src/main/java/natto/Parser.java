@@ -7,10 +7,24 @@ import java.time.format.DateTimeFormatter;
 
 public class Parser {
 
+    /**
+     * Extracts the command word (first token) from the user input.
+     *
+     * @param input Full user input.
+     * @return Command word (e.g. "todo", "deadline", "event").
+     */
     public static String getCommandWord(String input) {
         return input.trim().split(" ")[0];
     }
 
+    /**
+     * Parses the task index from commands like "mark 2" and converts it to 0-based index.
+     *
+     * @param input Full user input.
+     * @param size Current number of tasks (used for bounds checking).
+     * @return 0-based task index.
+     * @throws NattoException If the index is missing, not a number, or out of range.
+     */
     public static int parseIndex(String input, int size) throws NattoException {
         String[] parts = input.split(" ");
         if (parts.length < 2) {
@@ -30,6 +44,13 @@ public class Parser {
         return index;
     }
 
+    /**
+     * Parses a todo command and extracts its description.
+     *
+     * @param input Full user input.
+     * @return Description of the todo.
+     * @throws NattoException If the description is missing or empty.
+     */
     public static String parseTodo(String input) throws NattoException {
         String[] parts = input.split(" ", 2);
         if (parts.length < 2 || parts[1].trim().isEmpty()) {
@@ -38,6 +59,14 @@ public class Parser {
         return parts[1].trim();
     }
 
+    /**
+     * Parses a deadline command into a {@link Deadline} task.
+     * Accepted date formats: yyyy-mm-dd or yyyy-mm-dd HHmm.
+     *
+     * @param input Full user input.
+     * @return A Deadline task.
+     * @throws NattoException If "/by" is missing, description is empty, or date format is invalid.
+     */
     public static Deadline parseDeadline(String input) throws NattoException {
         if (!input.contains("/by")) {
             throw new NattoException("Natto.Deadline must have /by. Example: deadline [something] /by [yyyy-mm-dd HH]  ");
@@ -63,6 +92,18 @@ public class Parser {
         return new Deadline(desc, by);
     }
 
+    /**
+     * Parses an event command into an {@link Event} task.
+     * Accepted formats:
+     * <ul>
+     *   <li>/from: yyyy-mm-dd or yyyy-mm-dd HHmm</li>
+     *   <li>/to: HHmm or yyyy-mm-dd HHmm</li>
+     * </ul>
+     *
+     * @param input Full user input.
+     * @return An Event task.
+     * @throws NattoException If "/from" or "/to" is missing, description is empty, or date format is invalid.
+     */
     public static Event parseEvent(String input) throws NattoException {
         if (!input.contains("/from") || !input.contains("/to")) {
             throw new NattoException("Natto.Event must have /from and /to.");

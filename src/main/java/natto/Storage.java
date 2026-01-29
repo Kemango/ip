@@ -16,6 +16,12 @@ public class Storage {
         this.filePath = filePath;
     }
 
+    /**
+     * Loads tasks from the data file.
+     *
+     * @return List of tasks loaded from storage.
+     * @throws NattoException If an error occurs while reading the file.
+     */
     public List<Task> loadTasks() throws NattoException {
         List<Task> taskList = new ArrayList<>();
         File f = new File(filePath);
@@ -37,6 +43,13 @@ public class Storage {
         }
     }
 
+    /**
+     * Converts a line from the data file into a Task object.
+     *
+     * @param line A single line from the data file.
+     * @return The parsed Task.
+     * @throws IllegalArgumentException If the data format is invalid.
+     */
     static Task loadTaskArray(String line) {
         String[] parts = line.split(" \\| ");
 
@@ -86,6 +99,13 @@ public class Storage {
         return task;
     }
 
+    /**
+     * Converts a Task into its file storage format.
+     *
+     * @param task Task to convert.
+     * @return String representation suitable for saving to file.
+     * @throws NattoException If the task type is unsupported.
+     */
     static String taskToFile(Task task) throws NattoException {
         String done = task.isDone ? "1" : "0";
 
@@ -106,6 +126,12 @@ public class Storage {
         throw new IllegalArgumentException("Unknown task type");
     }
 
+    /**
+     * Saves the given list of tasks to the data file.
+     *
+     * @param tasks List of tasks to save.
+     * @throws NattoException If an error occurs while writing to the file.
+     */
     static void saveTasks(List<Task> tasks) throws NattoException {
         File dir = new File("data");
         File f = new File("data" + File.separator + "NatData.txt");
