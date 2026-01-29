@@ -1,3 +1,5 @@
+package natto;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -38,7 +40,7 @@ public class Parser {
 
     public static Deadline parseDeadline(String input) throws NattoException {
         if (!input.contains("/by")) {
-            throw new NattoException("Deadline must have /by. Example: deadline [something] /by [yyyy-mm-dd HH]  ");
+            throw new NattoException("Natto.Deadline must have /by. Example: deadline [something] /by [yyyy-mm-dd HH]  ");
         }
 
         String desc = input.substring(9, input.indexOf("/by")).trim();
@@ -63,7 +65,7 @@ public class Parser {
 
     public static Event parseEvent(String input) throws NattoException {
         if (!input.contains("/from") || !input.contains("/to")) {
-            throw new NattoException("Event must have /from and /to.");
+            throw new NattoException("Natto.Event must have /from and /to.");
         }
 
         String desc = input.substring(6, input.indexOf("/from")).trim();
