@@ -86,25 +86,27 @@ public class Storage {
         return task;
     }
 
-    static String taskToFile(Task task) throws NattoException {
-        String done = task.isDone ? "1" : "0";
+    static String taskToFile(Task task) {
+        String done = task.isDone() ? "1" : "0";
 
         if (task instanceof Todo) {
-            return "T | " + done + " | " + task.name;
+            return "T | " + done + " | " + task.getName();
         }
 
         if (task instanceof Deadline) {
             Deadline d = (Deadline) task;
-            return "D | " + done + " | " + d.name + " | " + d.by;
+            return "D | " + done + " | " + d.getName() + " | " + d.by;
         }
 
         if (task instanceof Event) {
             Event e = (Event) task;
             String time = e.from + "-" + e.to;
-            return "E | " + done + " | " + e.name + " | " + time;
+            return "E | " + done + " | " + e.getName() + " | " + time;
         }
+
         throw new IllegalArgumentException("Unknown task type");
     }
+
 
     static void saveTasks(List<Task> tasks) throws NattoException {
         File dir = new File("data");

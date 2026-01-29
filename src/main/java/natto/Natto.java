@@ -10,8 +10,8 @@ class NattoException extends Exception {
 }
 
 class Task {
-    String name;
-    boolean isDone;
+    private String name;
+    private boolean isDone;
 
     public Task(String name) {
         this.name = name;
@@ -26,9 +26,17 @@ class Task {
         this.isDone = false;
     }
 
+    public boolean isDone() {
+        return isDone;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     @Override
     public String toString() {
-        if(isDone) {
+        if (isDone) {
             return ("[X] " + this.name);
         } else {
             return ("[ ] " + this.name);
