@@ -4,8 +4,12 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Ui {
-
+    private String lastOutput = "";
     private final Scanner scanner = new Scanner(System.in);
+
+    public String getLastOutput() {
+        return lastOutput;
+    }
 
     /**
      * Reads a command line from the user.
@@ -23,19 +27,22 @@ public class Ui {
      * Prints the greeting message shown when the program starts.
      */
     public void printGreeting() {
-        System.out.println("Hello! I'm Natto");
-        System.out.println("What can I do for you?");
+        lastOutput = "Hello! I'm Natto\nWhat can I do for you?";
+        System.out.println(lastOutput);
     }
 
+
     public void printLine() {
-        System.out.println("____________________________________________________________");
+        lastOutput = "____________________________________________________________";
+        System.out.println(lastOutput);
     }
 
     /**
      * Prints the goodbye message shown when the program exits.
      */
-    public void printGoodbye(){
-        System.out.println("\nBye. Hope to see you again soon!");
+    public void printGoodbye() {
+        lastOutput = "Bye. Hope to see you again soon!";
+        System.out.println("\n" + lastOutput);
     }
 
     /**
@@ -44,7 +51,8 @@ public class Ui {
      * @param message Error message to display.
      */
     public void printError(String message) {
-        System.out.println(message);
+        lastOutput = message;
+        System.out.println(lastOutput);
     }
 
     /**
@@ -53,13 +61,18 @@ public class Ui {
      * @param tasks List of tasks to display.
      */
     public void printList(List<Task> tasks){
-        printLine();
-        System.out.println("Here are the tasks in your list:");
+        StringBuilder sb = new StringBuilder();
+        sb.append("Here are the tasks in your list:\n");
         for (int i = 0; i < tasks.size(); i++) {
-            System.out.println((i + 1) + ". " + tasks.get(i));
+            sb.append(i + 1).append(". ").append(tasks.get(i)).append("\n");
         }
+        lastOutput = sb.toString().trim();
+
+        printLine();
+        System.out.println(lastOutput);
         printLine();
     }
+
 
     /**
      * Prints confirmation that a task has been marked as done.
@@ -67,9 +80,9 @@ public class Ui {
      * @param tasks List of tasks.
      * @param index Index of the marked task (0-based).
      */
-    public void printMark(List<Task> tasks,  int index){
-        System.out.println("\nNice! I've marked this task as done:");
-        System.out.println("  " + tasks.get(index));
+    public void printMark(List<Task> tasks, int index){
+        lastOutput = "Nice! I've marked this task as done:\n  " + tasks.get(index);
+        System.out.println("\n" + lastOutput);
     }
 
     /**
@@ -79,8 +92,8 @@ public class Ui {
      * @param index Index of the unmarked task (0-based).
      */
     public void printUnmark(List<Task> tasks, int index){
-        System.out.println("OK, I've marked this task as not done yet:");
-        System.out.println("  " + tasks.get(index));
+        lastOutput = "OK, I've marked this task as not done yet:\n  " + tasks.get(index);
+        System.out.println(lastOutput);
     }
 
     /**
@@ -90,10 +103,11 @@ public class Ui {
      * @param size Updated number of tasks after deletion.
      */
     public void printDelete(Task removed, int size) {
-        System.out.println("\nNoted. I've removed this task:");
-        System.out.println("  " + removed);
-        System.out.println("Now you have " + size + " tasks in the list.");
+        lastOutput = "Noted. I've removed this task:\n  " + removed
+                + "\nNow you have " + size + " tasks in the list.";
+        System.out.println("\n" + lastOutput);
     }
+
 
     /**
      * Prints confirmation that a task has been added.
@@ -102,23 +116,34 @@ public class Ui {
      * @param size Updated number of tasks after adding.
      */
     public void printAdd(Task added, int size) {
-        System.out.println("\nGot it. I've added this task:");
-        System.out.println("  " + added);
-        System.out.println("Now you have " + size + " tasks in the list.");
+        lastOutput = "Got it. I've added this task:\n  " + added
+                + "\nNow you have " + size + " tasks in the list.";
+        System.out.println("\n" + lastOutput);
     }
 
     public void printFind(TaskList taskList, String keyword) {
-        printLine();
-        System.out.println("Here are the matching tasks in your list:");
+        StringBuilder sb = new StringBuilder();
+        sb.append("Here are the matching tasks in your list:\n");
 
+        boolean found = false;
         for (int i = 0; i < taskList.size(); i++) {
             Task task = taskList.get(i);
-            if (task.getName().toLowerCase()
-                    .contains(keyword.toLowerCase())) {
-                System.out.println((i + 1) + ". " + task);
+            if (task.getName().toLowerCase().contains(keyword.toLowerCase())) {
+                sb.append(i + 1).append(". ").append(task).append("\n");
+                found = true;
             }
         }
+
+        if (!found) {
+            sb.append("No matching tasks found.");
+        }
+
+        lastOutput = sb.toString().trim();
+
+        printLine();
+        System.out.println(lastOutput);
         printLine();
     }
+
 
 }

@@ -143,6 +143,23 @@ class Event extends Task {
 }
 
 public class Natto {
+    private final Ui ui = new Ui();
+    private final Storage storage = new Storage("data/NatData.txt");
+    private TaskList tasks;
+
+    public Natto() {
+        try {
+            tasks = new TaskList(storage.loadTasks());
+        } catch (NattoException e) {
+            tasks = new TaskList();
+        }
+    }
+    
+    public String getGreeting() {
+        ui.printGreeting();
+        return ui.getLastOutput();
+    }
+
     public static void main(String[] args) {
         boolean isComplete = false;
         Ui ui = new Ui();
@@ -153,7 +170,6 @@ public class Natto {
         try {
             tasks = new TaskList(storage.loadTasks());
         } catch (NattoException e) {
-            ui.printError(e.getMessage());
             tasks = new TaskList();
         }
 
@@ -213,17 +229,67 @@ public class Natto {
     }
 
     public String getResponse(String input) {
-        return "Natto heard: " + input;
-    }
+        if (input == null || input.trim().isEmpty()) {
+            return "";
+        }
 
-    /**
-     * Handles the list command and prints all tasks.
-     *
-     * @param input Full user input string.
-     * @param tasks Task list to display.
-     * @param ui UI used for printing output.
-     * @throws NattoException If the list command has extra arguments.
-     */
+        String commandWord = Parser.getCommandWord(input);
+
+        try {
+            switch (commandWord) {
+            case "bye":
+                ui.printGoodbye();
+                return ui.getLastOutput();
+
+            case "list":
+                implementList(input, tasks, ui);
+                return ui.getLastOutput();
+
+            case "mark":
+                implementMark(input, tasks, ui, storage);
+                return ui.getLastOutput();
+
+            case "unmark":
+                implementUnmark(input, tasks, ui, storage);
+                return ui.getLastOutput();
+
+            case "delete":
+                implementDelete(input, tasks, ui, storage);
+                return ui.getLastOutput();
+
+            case "todo":
+                implementTodo(input, tasks, ui, storage);
+                return ui.getLastOutput();
+
+            case "deadline":
+                implementDeadline(input, tasks, ui, storage);
+                return ui.getLastOutput();
+
+            case "event":
+                implementEvent(input, tasks, ui, storage);
+                return ui.getLastOutput();
+
+            case "find":
+                implementFind(input, tasks, ui);
+                return ui.getLastOutput();
+
+            default:
+                throw new NattoException("Please use a keyword like: todo, deadline, event, list");
+            }
+        } catch (NattoException e) {
+            ui.printError("Error: " + e.getMessage());
+            return ui.getLastOutput();
+        }
+    }
+    
+            /**
+             * Handles the list command and prints all tasks.
+             *
+             * @param input Full user input string.
+             * @param tasks Task list to display.
+             * @param ui UI used for printing output.
+             * @throws NattoException If the list command has extra arguments.
+             */
     static void implementList(String input, TaskList tasks, Ui ui) throws NattoException {
         String[] parts = input.split(" ");
         if (parts.length > 1) {
