@@ -212,6 +212,10 @@ public class Natto {
         }
     }
 
+    public String getResponse(String input) {
+        return "Natto heard: " + input;
+    }
+
     /**
      * Handles the list command and prints all tasks.
      *
