@@ -33,9 +33,9 @@ public class Ui {
 
 
     public void printLine() {
-        lastOutput = "____________________________________________________________";
-        System.out.println(lastOutput);
+        System.out.println("____________________________________________________________");
     }
+
 
     /**
      * Prints the goodbye message shown when the program exits.
@@ -60,18 +60,24 @@ public class Ui {
      *
      * @param tasks List of tasks to display.
      */
-    public void printList(List<Task> tasks){
+    public void printList(List<Task> tasks) {
         StringBuilder sb = new StringBuilder();
+        sb.append("______________________________________\n");
         sb.append("Here are the tasks in your list:\n");
-        for (int i = 0; i < tasks.size(); i++) {
-            sb.append(i + 1).append(". ").append(tasks.get(i)).append("\n");
-        }
-        lastOutput = sb.toString().trim();
 
-        printLine();
+        if (tasks.isEmpty()) {
+            sb.append("(No tasks yet)");
+        } else {
+            for (int i = 0; i < tasks.size(); i++) {
+                sb.append(i + 1).append(". ").append(tasks.get(i)).append("\n");
+            }
+        }
+        sb.append("______________________________________\n");
+        lastOutput = sb.toString().trim();
         System.out.println(lastOutput);
-        printLine();
     }
+
+
 
 
     /**

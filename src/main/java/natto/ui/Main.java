@@ -21,8 +21,7 @@ public class Main extends Application {
 
             Scene scene = new Scene(ap);
             stage.setScene(scene);
-
-            // inject Natto into the controller
+            
             fxmlLoader.<natto.ui.MainWindow>getController().setNatto(natto);
 
             stage.setTitle("Natto");
@@ -30,7 +29,6 @@ public class Main extends Application {
             stage.setMinHeight(600.0);
             stage.setMinWidth(400.0);
             
-
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
