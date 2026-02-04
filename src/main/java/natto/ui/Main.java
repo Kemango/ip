@@ -9,6 +9,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import natto.Natto;
 
+/**
+ * Main entry point for the Natto application.
+ */
 public class Main extends Application {
 
     private final Natto natto = new Natto();
@@ -21,14 +24,12 @@ public class Main extends Application {
 
             Scene scene = new Scene(ap);
             stage.setScene(scene);
-            
             fxmlLoader.<natto.ui.MainWindow>getController().setNatto(natto);
 
             stage.setTitle("Natto");
             stage.setResizable(false);
             stage.setMinHeight(600.0);
             stage.setMinWidth(400.0);
-            
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

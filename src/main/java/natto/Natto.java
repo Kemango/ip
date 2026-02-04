@@ -142,11 +142,18 @@ class Event extends Task {
     }
 }
 
+/**
+ * Represents the main application logic for Natto.
+ */
 public class Natto {
     private final Ui ui = new Ui();
     private final Storage storage = new Storage("data/NatData.txt");
     private TaskList tasks;
 
+    /**
+     * Constructs a Natto instance and loads stored tasks.
+     * If loading fails, an empty task list is created.
+     */
     public Natto() {
         try {
             tasks = new TaskList(storage.loadTasks());
@@ -154,18 +161,15 @@ public class Natto {
             tasks = new TaskList();
         }
     }
-    
     public String getGreeting() {
         ui.printGreeting();
         return ui.getLastOutput();
     }
-
     public static void main(String[] args) {
         boolean isComplete = false;
         Ui ui = new Ui();
         Storage storage = new Storage("data/NatData.txt");
         TaskList tasks;
-
         ui.printGreeting();
         try {
             tasks = new TaskList(storage.loadTasks());
@@ -175,8 +179,12 @@ public class Natto {
 
         while (!isComplete) {
             String input = ui.readCommand();
-            if (input == null) break;
-            if (input.isEmpty()) continue;
+            if (input == null) {
+                break;
+            }
+            if (input.isEmpty()) {
+                continue;
+            }
 
             String commandWord = Parser.getCommandWord(input);
 
@@ -218,7 +226,6 @@ public class Natto {
                 case "find":
                     implementFind(input, tasks, ui);
                     break;
-                    
                 default:
                     throw new NattoException("Please use a keyword like: todo, deadline, event, list");
                 }
@@ -281,15 +288,14 @@ public class Natto {
             return ui.getLastOutput();
         }
     }
-    
-            /**
-             * Handles the list command and prints all tasks.
-             *
-             * @param input Full user input string.
-             * @param tasks Task list to display.
-             * @param ui UI used for printing output.
-             * @throws NattoException If the list command has extra arguments.
-             */
+    /**
+     * Handles the list command and prints all tasks.
+     *
+     * @param input Full user input string.
+     * @param tasks Task list to display.
+     * @param ui UI used for printing output.
+     * @throws NattoException If the list command has extra arguments.
+     */
     static void implementList(String input, TaskList tasks, Ui ui) throws NattoException {
         String[] parts = input.split(" ");
         if (parts.length > 1) {

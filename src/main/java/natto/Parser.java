@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Parses user input into commands and task details.
+ */
 public class Parser {
 
     /**
@@ -69,7 +72,8 @@ public class Parser {
      */
     public static Deadline parseDeadline(String input) throws NattoException {
         if (!input.contains("/by")) {
-            throw new NattoException("Natto.Deadline must have /by. Example: deadline [something] /by [yyyy-mm-dd HH]  ");
+            throw new NattoException("Natto.Deadline must have /by. "
+                    + "Example: deadline [something] /by [yyyy-mm-dd HH]  ");
         }
 
         String desc = input.substring(9, input.indexOf("/by")).trim();
@@ -143,6 +147,13 @@ public class Parser {
         return new Event(desc, from, to);
     }
 
+    /**
+     * Parses a find command and extracts the keyword.
+     *
+     * @param input Full user input.
+     * @return Keyword to search for.
+     * @throws NattoException If the keyword is missing or empty.
+     */
     public static String parseFind(String input) throws NattoException {
         String[] parts = input.split(" ", 2);
 

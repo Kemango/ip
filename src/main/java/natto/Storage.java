@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Handles loading and saving of tasks to persistent storage.
+ */
 public class Storage {
     private final String filePath;
 
@@ -64,33 +67,33 @@ public class Storage {
         Task task;
 
         switch (type) {
-            case "T":
-                task = new Todo(description);
-                break;
+        case "T":
+            task = new Todo(description);
+            break;
 
-            case "D":
-                if (parts.length < 4) {
-                    throw new IllegalArgumentException("Corrupted deadline data: " + line);
-                }
-                LocalDateTime by = LocalDateTime.parse(parts[3].trim());
-                task = new Deadline(description, by);
-                break;
+        case "D":
+            if (parts.length < 4) {
+                throw new IllegalArgumentException("Corrupted deadline data: " + line);
+            }
+            LocalDateTime by = LocalDateTime.parse(parts[3].trim());
+            task = new Deadline(description, by);
+            break;
 
-            case "E":
-                String raw = parts[3].trim();
+        case "E":
+            String raw = parts[3].trim();
 
-                int lastSpace = raw.lastIndexOf(" ");
-                String date = raw.substring(0, lastSpace).trim();
-                String time = raw.substring(lastSpace + 1).trim();
+            int lastSpace = raw.lastIndexOf(" ");
+            String date = raw.substring(0, lastSpace).trim();
+            String time = raw.substring(lastSpace + 1).trim();
 
-                int dash = time.indexOf("-");
-                LocalDateTime from = LocalDateTime.parse(date + " " + time.substring(0, dash));
-                LocalDateTime to = LocalDateTime.parse(time.substring(dash + 1));
+            int dash = time.indexOf("-");
+            LocalDateTime from = LocalDateTime.parse(date + " " + time.substring(0, dash));
+            LocalDateTime to = LocalDateTime.parse(time.substring(dash + 1));
 
-                task = new Event(description, from, to);
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown task type: " + type);
+            task = new Event(description, from, to);
+            break;
+        default:
+            throw new IllegalArgumentException("Unknown task type: " + type);
         }
 
         if (isDone) {

@@ -3,6 +3,9 @@ package natto;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Handles user interaction, including reading input and displaying output.
+ */
 public class Ui {
     private String lastOutput = "";
     private final Scanner scanner = new Scanner(System.in);
@@ -86,7 +89,7 @@ public class Ui {
      * @param tasks List of tasks.
      * @param index Index of the marked task (0-based).
      */
-    public void printMark(List<Task> tasks, int index){
+    public void printMark(List<Task> tasks, int index) {
         lastOutput = "Nice! I've marked this task as done:\n  " + tasks.get(index);
         System.out.println("\n" + lastOutput);
     }
@@ -97,7 +100,7 @@ public class Ui {
      * @param tasks List of tasks.
      * @param index Index of the unmarked task (0-based).
      */
-    public void printUnmark(List<Task> tasks, int index){
+    public void printUnmark(List<Task> tasks, int index) {
         lastOutput = "OK, I've marked this task as not done yet:\n  " + tasks.get(index);
         System.out.println(lastOutput);
     }
@@ -127,6 +130,12 @@ public class Ui {
         System.out.println("\n" + lastOutput);
     }
 
+    /**
+     * Prints the tasks that match the given keyword.
+     *
+     * @param taskList The list of tasks to search.
+     * @param keyword  The keyword to search for.
+     */
     public void printFind(TaskList taskList, String keyword) {
         StringBuilder sb = new StringBuilder();
         sb.append("Here are the matching tasks in your list:\n");
