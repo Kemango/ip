@@ -128,6 +128,14 @@ public class Storage {
             return "E | " + done + " | " + e.getName() + " | " + time;
         }
 
+        if (task instanceof Contact) {
+            Contact c = (Contact) task;
+            return "C | " + done + " | " + c.getName()
+                    + " | " + c.getPhone()
+                    + " | " + c.getEmail()
+                    + " | " + c.getAddress();
+        }
+
         throw new IllegalArgumentException("Unknown task type");
     }
 

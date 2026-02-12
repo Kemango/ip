@@ -153,6 +153,10 @@ class Event extends Task {
 public class Natto {
     private static final String SAVE_PATH = "data/NatData.txt";
 
+    private static final String CREATOR_NAME = "Kemango";
+    private static final String CREATOR_NUM = "8283 6964";
+    private static final String CREATOR_EMAIL = "e1398747@u.nus.edu";
+
     private final Ui ui = new Ui();
     private final Storage storage = new Storage(SAVE_PATH);
     private TaskList tasks;
@@ -250,6 +254,14 @@ public class Natto {
 
             case "find":
                 implementFind(input);
+                return ui.getLastOutput();
+
+            case "creator":
+                contactCreator(input);
+                return ui.getLastOutput();
+
+            case "contact":
+                implementContact(input);
                 return ui.getLastOutput();
 
             default:
@@ -366,5 +378,27 @@ public class Natto {
         String keyword = Parser.parseFind(input);
         ui.printFind(tasks, keyword);
     }
+
+    /**
+     * Handles the contact command to display creator's contact information.
+     *
+     * @param input Full user input string.
+     * @throws NattoException If the input format is invalid.
+     */
+    private void contactCreator(String input) throws NattoException {
+        if (!input.trim().equals("contact")) {
+            throw new NattoException("contact keyword works alone");
+        }
+
+        ui.printContactCreator(CREATOR_NAME, CREATOR_NUM, CREATOR_EMAIL);
+    }
+
+    private void implementContact(String input) throws NattoException {
+        Contact c = Parser.parseContact(input);
+        tasks.add(c);
+        ui.printAdd(c, tasks.size());
+        storage.saveTasks(tasks.getAll());
+    }
+
 
 }

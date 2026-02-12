@@ -158,4 +158,18 @@ public class Ui {
         System.out.println(lastOutput);
         printLine();
     }
+
+    /**
+     * Prints the contact information of the creator.
+     *
+     * @param name  Creator's name.
+     * @param number Creator's contact number.
+     * @param email  Creator's email address.
+     */
+    public void printContactCreator(String name, String number, String email) {
+        lastOutput = "Creator: " + name + "\nContact: " + number + "\nEmail: " + email;
+        printLine();
+        System.out.println(lastOutput);
+        printLine();
+    }
 }

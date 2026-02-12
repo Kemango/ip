@@ -163,5 +163,46 @@ public class Parser {
 
         return parts[1].trim();
     }
+    /**
+     * Parses a contact command into a {@link Contact}.
+     * Format: contact NAME p/PHONE e/EMAIL a/ADDRESS(optional)
+     *
+     * @param input Full user input.
+     * @return A Contact object.
+     * @throws NattoException If required fields are missing or empty.
+     */
+    public static Contact parseContact(String input) throws NattoException {
+        // contact NAME p/PHONE e/EMAIL a/ADDRESS(optional)
+        String args = input.substring("contact".length()).trim();
+        if (args.isEmpty()) {
+            throw new NattoException("Usage: contact NAME p/PHONE e/EMAIL [a/ADDRESS]");
+        }
 
+        String name = args.split(" p/")[0].trim();
+        if (name.isEmpty()) {
+            throw new NattoException("Contact name cannot be empty.");
+        }
+
+        String phone = extractAfter(args, "p/");
+        String email = extractAfter(args, "e/");
+        String address = extractAfterOptional(args, "a/");
+
+        return new Contact(name, phone, email, address);
+    }
+    
+    private static String extractAfter(String args, String prefix) throws NattoException {
+        String[] parts = args.split(prefix);
+        if (parts.length < 2 || parts[1].trim().isEmpty()) {
+            throw new NattoException("Missing or empty value for " + prefix);
+        }
+        return parts[1].split(" ")[0].trim();
+    }
+    
+    private static String extractAfterOptional(String args, String prefix) {
+        String[] parts = args.split(prefix);
+        if (parts.length < 2 || parts[1].trim().isEmpty()) {
+            return "";
+        }
+        return parts[1].split(" ")[0].trim();
+    }
 }
