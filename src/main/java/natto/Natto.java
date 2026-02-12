@@ -146,8 +146,10 @@ class Event extends Task {
  * Represents the main application logic for Natto.
  */
 public class Natto {
+    private static final String SAVE_PATH = "data/NatData.txt";
+
     private final Ui ui = new Ui();
-    private final Storage storage = new Storage("data/NatData.txt");
+    private final Storage storage = new Storage(SAVE_PATH);
     private TaskList tasks;
 
     /**
@@ -161,80 +163,39 @@ public class Natto {
             tasks = new TaskList();
         }
     }
+    /**
+     * Returns the greeting message from the UI.
+     *
+     * @return Greeting message.
+     */
     public String getGreeting() {
         ui.printGreeting();
         return ui.getLastOutput();
     }
     public static void main(String[] args) {
+        new Natto().run();
+    }
+    /**
+     * Runs the main application loop, processing user commands until "bye" is received.
+     */
+    public void run() {
+        getGreeting();
         boolean isComplete = false;
-        Ui ui = new Ui();
-        Storage storage = new Storage("data/NatData.txt");
-        TaskList tasks;
-        ui.printGreeting();
-        try {
-            tasks = new TaskList(storage.loadTasks());
-        } catch (NattoException e) {
-            tasks = new TaskList();
-        }
 
         while (!isComplete) {
             String input = ui.readCommand();
-            if (input == null) {
-                break;
-            }
-            if (input.isEmpty()) {
+
+            if (input == null || input.trim().isEmpty()) {
                 continue;
             }
 
-            String commandWord = Parser.getCommandWord(input);
+            getResponse(input);
 
-            try {
-                switch (commandWord) {
-                case "bye":
-                    ui.printGoodbye();
-                    isComplete = true;
-                    break;
-
-                case "list":
-                    implementList(input, tasks, ui);
-                    break;
-
-                case "mark":
-                    implementMark(input, tasks, ui, storage);
-                    break;
-
-                case "unmark":
-                    implementUnmark(input, tasks, ui, storage);
-                    break;
-
-                case "delete":
-                    implementDelete(input, tasks, ui, storage);
-                    break;
-
-                case "todo":
-                    implementTodo(input, tasks, ui, storage);
-                    break;
-
-                case "deadline":
-                    implementDeadline(input, tasks, ui, storage);
-                    break;
-
-                case "event":
-                    implementEvent(input, tasks, ui, storage);
-                    break;
-
-                case "find":
-                    implementFind(input, tasks, ui);
-                    break;
-                default:
-                    throw new NattoException("Please use a keyword like: todo, deadline, event, list");
-                }
-            } catch (NattoException e) {
-                ui.printError(e.getMessage());
+            if ("bye".equals(input.trim())) {
+                isComplete = true;
             }
         }
     }
-
     public String getResponse(String input) {
         if (input == null || input.trim().isEmpty()) {
             return "";
@@ -249,35 +210,35 @@ public class Natto {
                 return ui.getLastOutput();
 
             case "list":
-                implementList(input, tasks, ui);
+                implementList(input);
                 return ui.getLastOutput();
 
             case "mark":
-                implementMark(input, tasks, ui, storage);
+                implementMark(input);
                 return ui.getLastOutput();
 
             case "unmark":
-                implementUnmark(input, tasks, ui, storage);
+                implementUnmark(input);
                 return ui.getLastOutput();
 
             case "delete":
-                implementDelete(input, tasks, ui, storage);
+                implementDelete(input);
                 return ui.getLastOutput();
 
             case "todo":
-                implementTodo(input, tasks, ui, storage);
+                implementTodo(input);
                 return ui.getLastOutput();
 
             case "deadline":
-                implementDeadline(input, tasks, ui, storage);
+                implementDeadline(input);
                 return ui.getLastOutput();
 
             case "event":
-                implementEvent(input, tasks, ui, storage);
+                implementEvent(input);
                 return ui.getLastOutput();
 
             case "find":
-                implementFind(input, tasks, ui);
+                implementFind(input);
                 return ui.getLastOutput();
 
             default:
@@ -289,16 +250,13 @@ public class Natto {
         }
     }
     /**
-     * Handles the list command and prints all tasks.
+     * Handles the list command to display all tasks.
      *
      * @param input Full user input string.
-     * @param tasks Task list to display.
-     * @param ui UI used for printing output.
-     * @throws NattoException If the list command has extra arguments.
+     * @throws NattoException If the input format is invalid.
      */
-    static void implementList(String input, TaskList tasks, Ui ui) throws NattoException {
-        String[] parts = input.split(" ");
-        if (parts.length > 1) {
+    private void implementList(String input) throws NattoException {
+        if (!input.trim().equals("list")) {
             throw new NattoException("list keyword works alone");
         }
         ui.printList(tasks.getAll());
@@ -308,12 +266,9 @@ public class Natto {
      * Handles the mark command and saves the updated task list.
      *
      * @param input Full user input string.
-     * @param tasks Task list to modify.
-     * @param ui UI used for printing output.
-     * @param storage Storage used for saving tasks.
      * @throws NattoException If the index is invalid.
      */
-    static void implementMark(String input, TaskList tasks, Ui ui, Storage storage) throws NattoException {
+    private void implementMark(String input) throws NattoException {
         int index = Parser.parseIndex(input, tasks.size());
         tasks.get(index).mark();
         ui.printMark(tasks.getAll(), index);
@@ -324,12 +279,9 @@ public class Natto {
      * Handles the unmark command and saves the updated task list.
      *
      * @param input Full user input string.
-     * @param tasks Task list to modify.
-     * @param ui UI used for printing output.
-     * @param storage Storage used for saving tasks.
      * @throws NattoException If the index is invalid.
      */
-    static void implementUnmark(String input, TaskList tasks, Ui ui, Storage storage) throws NattoException {
+    private void implementUnmark(String input) throws NattoException {
         int index = Parser.parseIndex(input, tasks.size());
         tasks.get(index).unmark();
         ui.printUnmark(tasks.getAll(), index);
@@ -340,12 +292,9 @@ public class Natto {
      * Handles the delete command and saves the updated task list.
      *
      * @param input Full user input string.
-     * @param tasks Task list to modify.
-     * @param ui UI used for printing output.
-     * @param storage Storage used for saving tasks.
      * @throws NattoException If the index is invalid.
      */
-    static void implementDelete(String input, TaskList tasks, Ui ui, Storage storage) throws NattoException {
+    private void implementDelete(String input) throws NattoException {
         int index = Parser.parseIndex(input, tasks.size());
         Task removed = tasks.remove(index);
         ui.printDelete(removed, tasks.size());
@@ -356,12 +305,9 @@ public class Natto {
      * Handles the todo command and saves the updated task list.
      *
      * @param input Full user input string.
-     * @param tasks Task list to modify.
-     * @param ui UI used for printing output.
-     * @param storage Storage used for saving tasks.
-     * @throws NattoException If the description is missing/invalid.
+     * @throws NattoException If the todo description is missing.
      */
-    static void implementTodo(String input, TaskList tasks, Ui ui, Storage storage) throws NattoException {
+    private void implementTodo(String input) throws NattoException {
         String desc = Parser.parseTodo(input);
         Todo todo = new Todo(desc);
 
@@ -374,29 +320,22 @@ public class Natto {
      * Handles the deadline command and saves the updated task list.
      *
      * @param input Full user input string.
-     * @param tasks Task list to modify.
-     * @param ui UI used for printing output.
-     * @param storage Storage used for saving tasks.
      * @throws NattoException If the deadline format is invalid.
      */
-    static void implementDeadline(String input, TaskList tasks, Ui ui, Storage storage) throws NattoException {
+    private void implementDeadline(String input) throws NattoException {
         Deadline deadline = Parser.parseDeadline(input);
 
         tasks.add(deadline);
         ui.printAdd(deadline, tasks.size());
         storage.saveTasks(tasks.getAll());
     }
-
     /**
      * Handles the event command and saves the updated task list.
      *
      * @param input Full user input string.
-     * @param tasks Task list to modify.
-     * @param ui UI used for printing output.
-     * @param storage Storage used for saving tasks.
      * @throws NattoException If the event format is invalid.
      */
-    static void implementEvent(String input, TaskList tasks, Ui ui, Storage storage) throws NattoException {
+    private void implementEvent(String input) throws NattoException {
         Event event = Parser.parseEvent(input);
 
         tasks.add(event);
@@ -404,7 +343,13 @@ public class Natto {
         storage.saveTasks(tasks.getAll());
     }
 
-    static void implementFind(String input, TaskList tasks, Ui ui) throws NattoException {
+    /**
+     * Handles the find command to search for tasks containing a keyword.
+     *
+     * @param input Full user input string.
+     * @throws NattoException If the find format is invalid.
+     */
+    private void implementFind(String input) throws NattoException {
         String keyword = Parser.parseFind(input);
         ui.printFind(tasks, keyword);
     }
