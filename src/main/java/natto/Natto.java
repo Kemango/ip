@@ -201,6 +201,12 @@ public class Natto {
             }
         }
     }
+    /**
+     * Processes a user input command and returns the corresponding response.
+     *
+     * @param input User input command.
+     * @return Response message after processing the command.
+     */
     public String getResponse(String input) {
         if (input == null || input.trim().isEmpty()) {
             return "";
