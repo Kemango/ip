@@ -140,17 +140,16 @@ public class Ui {
         StringBuilder sb = new StringBuilder();
         sb.append("Here are the matching tasks in your list:\n");
 
-        boolean found = false;
-        for (int i = 0; i < taskList.size(); i++) {
-            Task task = taskList.get(i);
-            if (task.getName().toLowerCase().contains(keyword.toLowerCase())) {
-                sb.append(i + 1).append(". ").append(task).append("\n");
-                found = true;
-            }
-        }
+        List<Task> matches = taskList.getAll().stream()
+                .filter(t -> t.getName().toLowerCase().contains(keyword.toLowerCase()))
+                .toList();
 
-        if (!found) {
+        if (matches.isEmpty()) {
             sb.append("No matching tasks found.");
+        } else {
+            for (int i = 0; i < matches.size(); i++) {
+                sb.append(i + 1).append(". ").append(matches.get(i)).append("\n");
+            }
         }
 
         lastOutput = sb.toString().trim();
@@ -159,6 +158,4 @@ public class Ui {
         System.out.println(lastOutput);
         printLine();
     }
-
-
 }
