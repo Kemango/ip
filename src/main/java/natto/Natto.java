@@ -25,6 +25,8 @@ class Task {
      * @param name Name/description of the task.
      */
     public Task(String name) {
+        assert name != null : "Task name should not be null";
+        assert !name.trim().isEmpty() : "Task name should not be empty";
         this.name = name;
         this.isDone = false;
     }
@@ -81,6 +83,7 @@ class Deadline extends Task {
      */
     public Deadline(String description, LocalDateTime by) {
         super(description);
+        assert by != null : "Deadline 'by' should not be null";
         this.by = by;
     }
 
@@ -128,6 +131,8 @@ class Event extends Task {
      */
     public Event(String description, LocalDateTime from, LocalDateTime to) {
         super(description);
+        assert from != null : "Event 'from' should not be null";
+        assert to != null : "Event 'to' should not be null";
         this.from = from;
         this.to = to;
     }
@@ -315,6 +320,8 @@ public class Natto {
      */
     static void implementMark(String input, TaskList tasks, Ui ui, Storage storage) throws NattoException {
         int index = Parser.parseIndex(input, tasks.size());
+        assert index >= 0 && index < tasks.size() : "Parser should return a valid index";
+
         tasks.get(index).mark();
         ui.printMark(tasks.getAll(), index);
         storage.saveTasks(tasks.getAll());
