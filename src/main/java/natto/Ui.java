@@ -137,14 +137,14 @@ public class Ui {
      */
     public void printFind(TaskList taskList, String keyword) {
         StringBuilder sb = new StringBuilder();
-        sb.append("Here are the matching tasks in your list:\n");
+        sb.append("Meow~\uD83D\uDE3A. Here are the matching tasks in your list:\n");
 
         List<Task> matches = taskList.getAll().stream()
                 .filter(t -> t.getName().toLowerCase().contains(keyword.toLowerCase()))
                 .toList();
 
         if (matches.isEmpty()) {
-            sb.append("No matching tasks found.");
+            sb.append("No matching tasks found. Meow~\uD83D\uDE3F.");
         } else {
             for (int i = 0; i < matches.size(); i++) {
                 sb.append(i + 1).append(". ").append(matches.get(i)).append("\n");
@@ -166,7 +166,7 @@ public class Ui {
      * @param email  Creator's email address.
      */
     public void printContactCreator(String name, String number, String email) {
-        lastOutput = "Creator: " + name + "\nContact: " + number + "\nEmail: " + email;
+        lastOutput = "\uD83D\uDC31Creator\uD83D\uDC31: " + name + "\nContact: " + number + "\nEmail: " + email;
         printLine();
         System.out.println(lastOutput);
         printLine();
