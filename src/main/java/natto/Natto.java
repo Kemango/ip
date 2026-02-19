@@ -386,7 +386,7 @@ public class Natto {
      * @throws NattoException If the input format is invalid.
      */
     private void contactCreator(String input) throws NattoException {
-        if (!input.trim().equals("contact")) {
+        if (!input.trim().equals("creator")) {
             throw new NattoException("contact keyword works alone");
         }
 
@@ -399,6 +399,4 @@ public class Natto {
         ui.printAdd(c, tasks.size());
         storage.saveTasks(tasks.getAll());
     }
-
-
 }

@@ -21,7 +21,10 @@ class Contact extends Task {
                 + ")";
     }
 
-    public String getPhone() { return phone; }
-    public String getEmail() { return email; }
-    public String getAddress() { return address; }
+    public String getPhone() {
+        return phone; }
+    public String getEmail() {
+        return email; }
+    public String getAddress() {
+        return address; }
 }
