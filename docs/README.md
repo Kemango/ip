@@ -42,6 +42,14 @@ Here are the tasks in your list:
 [T][ ] read book
 ```
 
+Expected output (when there are no tasks):
+
+```
+Here are the tasks in your list:
+
+😽 No tasks yet! 😽
+```
+
 ---
 
 ### Adding a todo: `todo`
