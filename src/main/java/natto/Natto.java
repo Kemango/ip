@@ -272,7 +272,7 @@ public class Natto {
                 throw new NattoException("Please use a keyword like: todo, deadline, event, list");
             }
         } catch (NattoException e) {
-            ui.printError("\uD83D\uDE40 " + e.getMessage() + " Meow~~ \uD83D\uDE40");
+            ui.printError(e.getMessage() + "\nMeow!! \uD83D\uDE40");
             return ui.getLastOutput();
         }
     }

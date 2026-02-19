@@ -30,7 +30,7 @@ public class Ui {
      * Prints the greeting message shown when the program starts.
      */
     public void printGreeting() {
-        lastOutput = "Hello! I'm Natto\nWhat can I do for you?";
+        lastOutput = "Hello! I'm Natto \uD83D\uDE38\nWhat can I do for you? \uD83D\uDE3AMeow~";
         System.out.println(lastOutput);
     }
 
@@ -44,7 +44,7 @@ public class Ui {
      * Prints the goodbye message shown when the program exits.
      */
     public void printGoodbye() {
-        lastOutput = "Bye. Hope to see you again soon!";
+        lastOutput = "Bye. Hope to see you again soon!\uD83D\uDE3A";
         System.out.println("\n" + lastOutput);
     }
 
@@ -89,7 +89,7 @@ public class Ui {
      * @param index Index of the marked task (0-based).
      */
     public void printMark(List<Task> tasks, int index) {
-        lastOutput = "Nice! I've marked this task as done:\n  " + tasks.get(index);
+        lastOutput = "Meow~\uD83D\uDE3A! I've marked this task as done:\n  " + tasks.get(index);
         System.out.println("\n" + lastOutput);
     }
 
@@ -100,7 +100,7 @@ public class Ui {
      * @param index Index of the unmarked task (0-based).
      */
     public void printUnmark(List<Task> tasks, int index) {
-        lastOutput = "OK, I've marked this task as not done yet:\n  " + tasks.get(index);
+        lastOutput = "Meow~\uD83D\uDE3A, I've marked this task as not done yet:\n  " + tasks.get(index);
         System.out.println(lastOutput);
     }
 
@@ -111,7 +111,7 @@ public class Ui {
      * @param size Updated number of tasks after deletion.
      */
     public void printDelete(Task removed, int size) {
-        lastOutput = "Noted. I've removed this task:\n  " + removed
+        lastOutput = "Meow~\uD83D\uDE3A. I've removed this task:\n  " + removed
                 + "\nNow you have " + size + " tasks in the list.";
         System.out.println("\n" + lastOutput);
     }
@@ -124,7 +124,7 @@ public class Ui {
      * @param size Updated number of tasks after adding.
      */
     public void printAdd(Task added, int size) {
-        lastOutput = "Got it. I've added this task:\n  " + added
+        lastOutput = "Meow~\uD83D\uDE3A. I've added this task:\n  " + added
                 + "\nNow you have " + size + " tasks in the list.";
         System.out.println("\n" + lastOutput);
     }
