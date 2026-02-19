@@ -1,9 +1,7 @@
 # Natto User Guide
 
-// Update the title above to match the actual product name
 Natto is a simple task manager that helps you track todos, deadlines, and events using easy commands.
 
-// Product screenshot goes here
 ![Ui.png](Ui.png)
 
 ## Quick start
