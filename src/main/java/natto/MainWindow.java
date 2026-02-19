@@ -42,7 +42,7 @@ public class MainWindow extends AnchorPane {
     public void setNatto(Natto n) {
         natto = n;
         dialogContainer.getChildren().add(
-                DialogBox.getDukeDialog(
+                DialogBox.getNattoDialog(
                         natto.getGreeting(),
                         nattoImage
                 )
@@ -56,7 +56,7 @@ public class MainWindow extends AnchorPane {
 
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getDukeDialog(response, nattoImage)
+                DialogBox.getNattoDialog(response, nattoImage)
         );
 
         userInput.clear();
