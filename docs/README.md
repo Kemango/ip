@@ -36,7 +36,7 @@ Format:
 Example:  
 `list`
 
-Expected output (example):
+Expected output (when there are tasks):
 Here are the tasks in your list:
 ```
 [T][ ] read book
@@ -180,11 +180,19 @@ Format:
 Example:  
 `find report`
 
-Expected output (example):
+Expected output (when matching tasks are found):
+
 ```
 Meow~😺. Here are the matching tasks in your list:
 
 [D][ ] submit report (by: Mar 10 2026)
+```
+
+Expected output (when no matching tasks are found):
+
+```
+Meow~😺. Here are the matching tasks in your list:
+No matching tasks found. Meow~😿.
 ```
 
 ---
