@@ -38,9 +38,9 @@ Example:
 
 Expected output (example):
 Here are the tasks in your list:
-
+```
 [T][ ] read book
-
+```
 
 ---
 
@@ -55,9 +55,11 @@ Example:
 `todo buy milk`
 
 Expected output (example):
+```
 Meow~😺. I've added this task:
 [T][ ] buy milk
 Now you have 1 tasks in the list.
+```
 
 ---
 
@@ -75,10 +77,11 @@ Examples:
 `deadline submit report /by 2026-03-10 2359`
 
 Expected output (example):
+```
 Meow~😺. I've added this task:
 [D][ ] submit report (by: Mar 10 2026)
 Now you have 2 tasks in the list.
-
+```
 
 ---
 
@@ -96,12 +99,13 @@ Examples:
 `event camp /from 2026-03-01 0900 /to 2026-03-03 1800`
 
 Expected output (example):
+```
 Meow~😺. I've added this task:
 [E][ ] team meeting (from: Mar 01 2026 14:00 to: 16:00)
 Now you have 3 tasks in the list.
+```
 
 ---
-
 
 ### Marking a task as done: `mark`
 
@@ -114,9 +118,10 @@ Example:
 `mark 1`
 
 Expected output (example):
+```
 Meow~😺! I've marked this task as done:
 [T][X] buy milk
-
+```
 
 ---
 
@@ -131,8 +136,10 @@ Example:
 `unmark 1`
 
 Expected output (example):
+```
 Meow~😺, I've marked this task as not done yet:
 [T][ ] buy milk
+```
 
 ---
 
@@ -147,9 +154,11 @@ Example:
 `delete 2`
 
 Expected output (example):
+```
 Meow~😺. I've removed this task:
 [D][ ] submit report (by: Mar 10 2026)
 Now you have 2 tasks in the list.
+```
 
 ---
 
@@ -164,9 +173,11 @@ Example:
 `find report`
 
 Expected output (example):
+```
 Meow~😺. Here are the matching tasks in your list:
 
 [D][ ] submit report (by: Mar 10 2026)
+```
 
 ---
 
@@ -182,10 +193,12 @@ Examples:
 `contact Ben p/98765432 e/ben@gmail.com a/NUS`
 
 Expected output (example):
+```
 Meow~😺. I've added this task:
 [C][ ] Ben (p: 98765432, e: ben@gmail.com
 , a: NUS)
 Now you have 4 tasks in the list.
+```
 
 ---
 
@@ -197,9 +210,11 @@ Format:
 `creator`
 
 Expected output (example):
+```
 🐱Creator🐱: Kemango
 Contact: 8283 6964
 Email: e1398747@u.nus.edu
+```
 
 ---
 
@@ -211,7 +226,9 @@ Format:
 `bye`
 
 Expected output (example):
+```
 Bye. Hope to see you again soon!😺
+```
 
 ---
 
