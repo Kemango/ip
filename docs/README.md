@@ -211,8 +211,7 @@ Examples:
 Expected output (example):
 ```
 Meow~😺. I've added this task:
-[C][ ] Ben (p: 98765432, e: ben@gmail.com
-, a: NUS)
+[C][ ] Ben (p: 98765432, e: ben@gmail.com, a: NUS)
 Now you have 4 tasks in the list.
 ```
 
