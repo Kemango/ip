@@ -3,6 +3,10 @@ package natto;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import javafx.application.Platform;
+
+
+
 /**
  * Represents an application-specific exception for Natto.
  */
@@ -189,9 +193,8 @@ public class Natto {
      */
     public void run() {
         getGreeting();
-        boolean isComplete = false;
 
-        while (!isComplete) {
+        while (true) {
             String input = ui.readCommand();
 
             if (input == null || input.trim().isEmpty()) {
@@ -201,7 +204,7 @@ public class Natto {
             getResponse(input);
 
             if ("bye".equals(input.trim())) {
-                isComplete = true;
+                break;
             }
         }
     }
@@ -222,6 +225,7 @@ public class Natto {
             switch (commandWord) {
             case "bye":
                 ui.printGoodbye();
+                Platform.exit();
                 return ui.getLastOutput();
 
             case "list":
@@ -268,7 +272,7 @@ public class Natto {
                 throw new NattoException("Please use a keyword like: todo, deadline, event, list");
             }
         } catch (NattoException e) {
-            ui.printError("Error: " + e.getMessage());
+            ui.printError("\uD83D\uDE40 " + e.getMessage() + " Meow~~ \uD83D\uDE40");
             return ui.getLastOutput();
         }
     }

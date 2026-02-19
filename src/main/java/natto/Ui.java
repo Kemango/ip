@@ -65,24 +65,23 @@ public class Ui {
      */
     public void printList(List<Task> tasks) {
         StringBuilder sb = new StringBuilder();
-        sb.append("______________________________________\n");
-        sb.append("Here are the tasks in your list:\n");
+
+        sb.append("Here are the tasks in your list:\n\n");
 
         if (tasks.isEmpty()) {
-            sb.append("(No tasks yet)");
+            sb.append("\uD83D\uDE3D No tasks yet! \uD83D\uDE3D");
         } else {
             for (int i = 0; i < tasks.size(); i++) {
-                sb.append(i + 1).append(". ").append(tasks.get(i)).append("\n");
+                sb.append(i + 1)
+                        .append(". ")
+                        .append(tasks.get(i))
+                        .append("\n");
             }
         }
-        sb.append("______________________________________\n");
+
         lastOutput = sb.toString().trim();
         System.out.println(lastOutput);
     }
-
-
-
-
     /**
      * Prints confirmation that a task has been marked as done.
      *

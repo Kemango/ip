@@ -30,9 +30,13 @@ public class MainWindow extends AnchorPane {
     private final Image nattoImage =
             new Image(this.getClass().getResourceAsStream("/images/natto.jpg"));
 
+    /**
+     * Initializes the main window, setting up necessary bindings and loading resources.
+     */
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
+        System.out.println(getClass().getResource("/images/catWP.png"));
     }
 
     public void setNatto(Natto n) {
@@ -56,5 +60,9 @@ public class MainWindow extends AnchorPane {
         );
 
         userInput.clear();
+        
+        if ("bye".equals(input.trim())) {
+            javafx.application.Platform.exit();
+        }
     }
 }

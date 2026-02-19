@@ -1,27 +1,54 @@
 .root {
-    main-color: rgb(237, 255, 242);
-    -fx-background-color: main-color;
-}
-
-.text-field {
-    -fx-background-color: #d9ffe2;
-    -fx-font: 20px "Arial";
-}
-
-.button {
-    -fx-background-color: mediumspringgreen;
-    -fx-font: italic bold 16px "Arial";
-}
-
-.button:hover {
-    -fx-background-color: cyan;
-}
-
-.button:pressed {
-    -fx-background-color: orange;
+    -fx-background-image: url("/images/catWP.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 140% auto;
+    -fx-background-position: center 102%;
 }
 
 .scroll-pane,
 .scroll-pane .viewport {
     -fx-background-color: transparent;
+}
+
+.label {
+    -fx-text-fill: #2e2e2e;
+}
+
+.text-field {
+    -fx-background-color: rgba(255, 255, 255, 0.80);
+    -fx-background-radius: 18;
+    -fx-padding: 6 12 6 12;
+    -fx-font: 15px "Arial";
+}
+
+
+.text-field:focused {
+    -fx-border-color: transparent;
+}
+
+.button {
+    -fx-background-color: #d56387;
+    -fx-text-fill: white;
+    -fx-font: bold 15px "Arial";
+    -fx-background-radius: 20;
+    -fx-padding: 8 20 8 20;
+
+    -fx-min-width: 90px;    
+    -fx-pref-width: 90px;
+}
+.button:hover {
+    -fx-background-color: #e792ad;
+}
+
+.button:pressed {
+    -fx-background-color: #e792ad;
+}
+
+
+.input-bar {
+    -fx-background-color: rgba(255, 255, 255, 0.45);
+    -fx-background-radius: 22;
+    -fx-padding: 10 14 10 14;   /* more padding so children don't touch edges */
+    -fx-spacing: 10;            /* space between textfield and button (HBox) */
+    -fx-alignment: center-left; /* vertically center items */
 }
