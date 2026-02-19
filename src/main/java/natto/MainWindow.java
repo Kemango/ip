@@ -60,7 +60,6 @@ public class MainWindow extends AnchorPane {
         );
 
         userInput.clear();
-        
         if ("bye".equals(input.trim())) {
             javafx.application.Platform.exit();
         }
